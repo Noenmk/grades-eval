@@ -3,6 +3,8 @@ title: "Mansuy"
 author: "Noé Mansuy"
 format: html
 ---
+Github repository : https://github.com/Noenmk/grades-eval.git
+
 ## 1 - Introduction
 
 ```{r}
@@ -116,6 +118,35 @@ students |>
     x = "Age (Years)",
     y = "Number of Students"
   )
+```
+# Question 8
+
+
+```{r}
+students <- students |>
+  mutate(group = as.factor(group))
+
+
+median_age_table <- students |>
+  
+group_by(group) |> 
+  mutate(
+    age_years = time_length(today() - birth_date, unit = "year")
+  ) |>
+  
+  summarize(
+    median_age_int = round(median(age_years, na.rm = TRUE))
+  ) |>
+  
+
+print("Median Age of Students per Group:")
+median_age_table |>
+  # Optional: Rename columns for better table readability
+  select(
+    'Group Identifier' = group,
+    'Median Age' = median_age_int
+  ) |>
+  knitr::kable()
 ```
 
 
