@@ -201,6 +201,7 @@ avg_grades_table |>
 
 ## Attendance analysis
 
+# Question 13
 ```{r}
 
 grades_per_student <- grades |>
@@ -224,6 +225,21 @@ summary_table <- grades_per_student |>
 knitr::kable(summary_table)
 
 ```
+
+# Question 14
+
+```{r}
+ggplot(grades_per_student, aes(x = num_grades, fill = sex)) +
+  geom_histogram(position = "dodge", binwidth = 1, color = "white") +
+  scale_x_continuous(breaks = 0:max(grades_per_student$num_grades)) +
+  labs(
+    title = "Distribution of Number of Grades by Sex and Number of Students",
+    x = "Number of Grades",
+    y = "Number of Students",
+    fill = "Sex"
+  )
+```
+# Question 15
 
 
 
