@@ -164,6 +164,39 @@ knitr::kable(oldest_students)
 
 The data set grades contains `r sum(!is.na(grades$grade))` grades.
 
+# Question 11
+
+```{r}
+combined_data <- grades |> 
+  left_join(courses, by = "course_id") |>
+
+  left_join(students, by = "id")
+
+avg_grades_table <- combined_data |>
+  
+  filter(course == "Traditional Medicine and Herbalism") |>
+  
+  group_by(group) |>
+  
+  summarize(
+    avg_grade = mean(grade, na.rm = TRUE)
+  )
+
+avg_grades_table |>
+  mutate(group = factor(as.integer(as.character(group)), ordered = TRUE)) |>
+  ggplot(aes(x = group, y = avg_grade)) + 
+  geom_col(fill = "salmon", color = "white") +
+  geom_hline(yintercept = mean(avg_grades_table$avg_grade, na.rm = TRUE), 
+             linetype = "dashed", color = "grey20") +
+  scale_y_continuous(limits = c(0, 20)) +  # <-- set y-axis from 0 to 20
+  labs(
+    title = "Average Grade in Traditional Medicine and Herbalism by Group",
+    x = "Student Group",
+    y = "Average Grade"
+  )
+
+  
+```
 
 
 
