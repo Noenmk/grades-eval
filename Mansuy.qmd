@@ -16,5 +16,18 @@ here::i_am("grades-eval.Rproj")
 ```{r}
 courses <- vroom(here("courses.csv"))
 ```
+# Question 2 
+```{r}
+courses_formatted_table <- courses |> 
+  arrange(course) |> 
+  select(
+    'course name' = course,
+    identifier = course_id,
+    module = module,
+    'number of exams' = nb_grades
+  )
+courses_formatted_table |> 
+  knitr::kable()
+```
 
 
