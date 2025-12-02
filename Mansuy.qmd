@@ -307,6 +307,166 @@ ggplot(grades_arch_scul, aes(x = factor(group), y = num_grades, fill = sex)) +
   )
 
 ```
+# Question 19
+
+```{r}
+avg_grades <- combined_data |>
+  group_by(id, group, course) |>
+  summarize(avg_grade = mean(grade, na.rm = TRUE), .groups = "drop")
+
+grades_wide <- avg_grades |>
+  pivot_wider(
+    names_from = course,
+    values_from = avg_grade
+  )
+
+grades_wide |>
+  select(id, group, `Agriculture and Horticulture`, `Architecture and Sculpture`) |>
+  slice_head(n = 5) |>
+  knitr::kable()
+
+```
+# Question 20 
+```{r}
+ggplot(grades_wide, aes(
+  x = `Language and Linguistics`,
+  y = `Music and Dance`
+)) +
+  geom_bin2d(bins = 15) + 
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  labs(
+    title = "2D Binned Average Grades: Music and Dance vs Language and Linguistics",
+    x = "Average Grade in Language and Linguistics",
+    y = "Average Grade in Music and Dance",
+    fill = "Number of Students"
+  ) +
+  scale_x_continuous(limits = c(0, 20)) +
+  scale_y_continuous(limits = c(0, 20)) +
+  theme_minimal(base_size = 14)
+```
+# Question 21
+
+```{r}
+correlation_by_group <- grades_wide |>
+  group_by(group) |>
+  summarize(
+    correlation = cor(
+      `Astrology and Divination`,
+      `Martial Arts and Self-Defense`,
+      use = "complete.obs"
+    ),
+    .groups = "drop"
+  )
+
+correlation_by_group |>
+  knitr::kable()
+
+```
+# Question 22
+
+```{r}
+correlation_by_group <- grades_wide |>
+  group_by(group) |>
+  summarize(
+    correlation = cor(
+      `Astrology and Divination`,
+      `Martial Arts and Self-Defense`,
+      use = "complete.obs"
+    ),
+    .groups = "drop"
+  )
+
+best_group <- correlation_by_group |>
+  slice_max(order_by = abs(correlation), n = 1) |>
+  pull(group)
+
+grades_best_group <- grades_wide |>
+  filter(group == best_group)
+
+ggplot(grades_best_group, aes(
+  x = `Astrology and Divination`,
+  y = `Martial Arts and Self-Defense`
+)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred", linetype = "dashed") +
+  labs(
+    title = paste("Grades in Astrology vs Martial Arts\n(Group", best_group, ")"),
+    x = "Average Grade in Astrology and Divination",
+    y = "Average Grade in Martial Arts and Self-Defense"
+  ) +
+  scale_x_continuous(limits = c(0, 20)) +
+  scale_y_continuous(limits = c(0, 20)) +
+  theme_minimal(base_size = 14)
+
+
+```
+# Question 23
+
+```{r}
+
+final_grades <- grades_wide |>
+  rowwise() |> 
+  mutate(
+    final_grade = mean(c_across(-c(id, group)), na.rm = TRUE)  
+  ) |>
+  ungroup() |>
+  
+  
+  left_join(students |> select(id, sex), by = "id") |>
+  select(id, group, sex, final_grade) |>
+ 
+  arrange(desc(final_grade))
+
+
+final_grades |>
+  slice_head(n = 5) |>
+  knitr::kable(digits = 2)
+
+```
+# Question 24
+
+```{r}
+library(dplyr)
+library(knitr)
+
+summary_by_group <- final_grades |>
+  group_by(group) |>
+  summarize(
+    min = min(final_grade, na.rm = TRUE),
+    max = max(final_grade, na.rm = TRUE),
+    mean = mean(final_grade, na.rm = TRUE),
+    median = median(final_grade, na.rm = TRUE),
+    sd = sd(final_grade, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+summary_by_group |>
+  knitr::kable(digits = 2)
+
+```
+# Question 25
+```{r}
+summary_by_group_sex <- final_grades |>
+  group_by(group, sex) |>
+  summarize(
+    min = min(final_grade, na.rm = TRUE),
+    max = max(final_grade, na.rm = TRUE),
+    mean = mean(final_grade, na.rm = TRUE),
+    median = median(final_grade, na.rm = TRUE),
+    sd = sd(final_grade, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+summary_by_group_sex |>
+  knitr::kable(digits = 2)
+
+```
+
+
+
+
+
 
 
 
