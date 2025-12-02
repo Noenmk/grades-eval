@@ -96,6 +96,27 @@ students |>
     fill = "Gender"
   )
 ```
+# Question 7
+
+
+```{r}
+library(lubridate)
+students |>
+  
+  mutate(
+    age_years = time_length(today() - birth_date, unit = "year")
+  ) |>
+  
+  ggplot(aes(x = age_years)) +
+  
+  geom_histogram(fill = "darkgreen", color = "white") +
+  
+  labs(
+    title = "Distribution of Student Age",
+    x = "Age (Years)",
+    y = "Number of Students"
+  )
+```
 
 
 
