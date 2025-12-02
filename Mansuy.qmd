@@ -253,6 +253,26 @@ grades_arch_scul |>
   knitr::kable()
 
 ```
+# Question 16 
+
+```{r}
+
+grades_distribution <- grades_arch_scul |>
+  group_by(num_grades) |>
+  summarize(num_students = n(), .groups = "drop")
+
+ggplot(grades_distribution, aes(x = num_grades, y = num_students)) +
+  geom_col(fill = "steelblue", color = "white") +
+  scale_x_continuous(breaks = grades_distribution$num_grades) + 
+  labs(
+    title = "Distribution of Number of Grades per Student\n(Architecture and Sculpture)",
+    x = "Number of Grades",
+    y = "Number of Students"
+  ) +
+  theme_minimal()
+
+
+```
 
 
 
