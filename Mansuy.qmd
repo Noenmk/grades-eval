@@ -37,7 +37,7 @@ students <- vroom(
   here("students.csv"),
   col_types = cols(
     id = col_integer(),
-    group = col_factor(), 
+    group = col_integer(), 
     birth_date = col_date(format = "%Y-%m-%d"), 
     sex = col_factor()
   )
@@ -61,6 +61,24 @@ grades <- vroom(here("grades.csv"),
   )
 )
 ```
+
+## Student population analysis
+
+# Question 5
+```{r}
+students |> 
+
+  ggplot(aes(x = group)) + 
+  
+  geom_bar(fill = "steelblue") +
+  
+  labs(
+    title = "Distribution of Students Across Groups",
+    x = "Student Group ",
+    y = "Number of Students"
+  ) 
+```
+
 
 
 
