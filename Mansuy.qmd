@@ -3,6 +3,8 @@ title: "Mansuy"
 author: "Noé Mansuy"
 format: html
 ---
+## 1 - Introduction
+
 ```{r}
 library(here)
 library(ggplot2)
@@ -46,6 +48,20 @@ print(paste("The birth_date column of the students data frame is of class",
 print(paste("The sex column of the students data frame is of class",
             class(students$sex)))
 ```
+# Question 4
+
+```{r}
+grades <- vroom(here("grades.csv"), 
+  delim = ":", 
+  na = "_", 
+  col_types = cols(
+    id = col_integer(),
+    course_id = col_factor(),
+    grade = col_double()
+  )
+)
+```
+
 
 
 
