@@ -167,6 +167,10 @@ The data set grades contains `r sum(!is.na(grades$grade))` grades.
 # Question 11
 
 ```{r}
+grades <- grades |>
+  mutate(course_id = as.integer(as.character(course_id)))
+grades <- grades |>
+  mutate(course_id = as.integer(as.character(course_id)))
 combined_data <- grades |> 
   left_join(courses, by = "course_id") |>
 
@@ -462,6 +466,148 @@ summary_by_group_sex |>
   knitr::kable(digits = 2)
 
 ```
+# Question 26
+
+```{r}
+
+grades_long <- grades_wide |>
+  pivot_longer(
+    cols = -c(id, group),
+    names_to = "course",
+    values_to = "avg_grade"
+  ) |>
+  left_join(courses, by = "course")  
+students_pass <- grades_long |>
+  group_by(id, group) |>
+  summarize(
+    final_grade = mean(avg_grade, na.rm = TRUE),                    
+    min_course = min(avg_grade, na.rm = TRUE),                      
+    module1_avg = mean(avg_grade[module == 1], na.rm = TRUE),       
+    module2_avg = mean(avg_grade[module == 2], na.rm = TRUE),        
+    pass = (min_course >= 5) & (module1_avg >= 10) & (module2_avg >= 10),
+    .groups = "drop"
+  ) |>
+  select(id, group, final_grade, pass) 
+
+
+students_pass |>
+  slice_head(n = 5) |>
+  knitr::kable(digits = 2)
+
+```
+# Question 27
+```{r}
+
+students_almost_pass <- students_pass |>
+  filter(!pass & final_grade >= 10)
+
+
+num_students <- nrow(students_almost_pass)
+
+cat("The number of students who do not pass but have a final grade >= 10 is", num_students, ".\n")
+
+
+students_almost_pass |>
+  slice_head(n = 5) |>
+  knitr::kable(digits = 2)
+
+```
+# Question 28 
+```{r}
+library(dplyr)
+library(knitr)
+
+pass_rate_by_group <- students_pass |>
+  group_by(group) |>
+  summarize(
+    pass_rate = mean(pass) * 100, 
+    total_students = n(),
+    .groups = "drop"
+  )
+
+
+pass_rate_by_group |>
+  knitr::kable(digits = 2)
+
+library(ggplot2)
+
+ggplot(pass_rate_by_group, aes(x = factor(group), y = pass_rate, fill = factor(group))) +
+  geom_col(color = "white") +
+  geom_text(aes(label = paste0(round(pass_rate, 1), "%")), vjust = -0.5, size = 4) +
+  labs(
+    title = "Pass Rate per Group",
+    x = "Student Group",
+    y = "Pass Rate (%)",
+    fill = "Group"
+  ) +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme_minimal(base_size = 14)
+
+```
+# Question 29
+```{r}
+grades_long <- grades_wide |>
+  pivot_longer(
+    cols = -c(id, group),
+    names_to = "course",
+    values_to = "avg_grade"
+  )
+
+failures_by_course <- grades_long |>
+  filter(avg_grade < 5) |>
+  group_by(course) |>
+  summarize(
+    num_failures = n(),
+    .groups = "drop"
+  ) |>
+  arrange(desc(num_failures))
+
+
+
+most_responsible_course <- failures_by_course |> slice_max(num_failures, n = 1) |> pull(course)
+
+cat("The course most responsible for student failures due to grades below 5 is:", 
+    most_responsible_course, "\n")
+
+
+```
+# Question 30
+
+```{r}
+students_pass_age <- students_pass |>
+  left_join(students |> select(id, birth_date), by = "id") |>
+  mutate(
+    age_years = time_length(today() - birth_date, unit = "year") |> floor()
+  )
+
+success_by_age <- students_pass_age |>
+  group_by(age_years) |>
+  summarize(
+    success_rate = mean(pass) * 100,
+    n_students = n(),
+    .groups = "drop"
+  )
+
+library(ggplot2)
+
+ggplot(success_by_age, aes(x = age_years, y = success_rate)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "darkred", size = 2) +
+  labs(
+    title = "Success Rate as a Function of Student Age",
+    x = "Age (Years)",
+    y = "Success Rate (%)"
+  ) +
+  scale_y_continuous(limits = c(0, 100)) 
+
+
+
+
+```
+
+
+
+
 
 
 
