@@ -123,29 +123,24 @@ students |>
 
 
 ```{r}
-students <- students |>
-  mutate(group = as.factor(group))
-
-
+# Juste le calcul
 median_age_table <- students |>
-  
-group_by(group) |> 
+  group_by(group) |> 
   mutate(
     age_years = time_length(today() - birth_date, unit = "year")
   ) |>
-  
   summarize(
     median_age_int = floor(median(age_years, na.rm = TRUE))
-  ) |>
-  
+  )
 
-print("Median Age of Students per Group:")
+# Affichage du tableau proprement
 median_age_table |>
   select(
     'Group Identifier' = group,
     'Median Age' = median_age_int
   ) |>
   knitr::kable()
+
 ```
 # Question 9
 
@@ -163,6 +158,12 @@ oldest_students <- students |>
 knitr::kable(oldest_students)
 
 ```
+## Simple grade analysis
+
+# Question 10
+
+The data set grades contains `r sum(!is.na(grades$grade))` grades.
+
 
 
 
