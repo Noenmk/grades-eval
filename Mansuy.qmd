@@ -135,18 +135,33 @@ group_by(group) |>
   ) |>
   
   summarize(
-    median_age_int = round(median(age_years, na.rm = TRUE))
+    median_age_int = floor(median(age_years, na.rm = TRUE))
   ) |>
   
 
 print("Median Age of Students per Group:")
 median_age_table |>
-  # Optional: Rename columns for better table readability
   select(
     'Group Identifier' = group,
     'Median Age' = median_age_int
   ) |>
   knitr::kable()
+```
+# Question 9
+
+```{r}
+
+oldest_students <- students |>
+  mutate(age = floor(time_length(today() - birth_date, unit = "year"))) |>
+  
+  group_by(group) |>
+  slice_max(age, n = 1, with_ties = FALSE) |>
+  
+  select(id, sex, age) |>
+  
+  arrange(desc(age))
+knitr::kable(oldest_students)
+
 ```
 
 
