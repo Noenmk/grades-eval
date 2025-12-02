@@ -3,4 +3,18 @@ title: "Mansuy"
 author: "Noé Mansuy"
 format: html
 ---
+```{r}
+library(here)
+library(ggplot2)
+library(vroom)
+library(dplyr)
+library(tidyr)
+here::i_am("grades-eval.Rproj")
+```
+# Question 1
+
+```{r}
+courses <- vroom(here("courses.csv"))
+```
+
 
