@@ -29,5 +29,23 @@ courses_formatted_table <- courses |>
 courses_formatted_table |> 
   knitr::kable()
 ```
+# Question 3
+```{r}
+students <- vroom(
+  here("students.csv"),
+  col_types = cols(
+    id = col_integer(),
+    group = col_factor(), 
+    birth_date = col_date(format = "%Y-%m-%d"), 
+    sex = col_factor()
+  )
+)
+
+print(paste("The birth_date column of the students data frame is of class",
+            class(students$birth_date)))
+print(paste("The sex column of the students data frame is of class",
+            class(students$sex)))
+```
+
 
 
