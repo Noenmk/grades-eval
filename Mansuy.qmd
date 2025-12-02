@@ -241,6 +241,19 @@ ggplot(grades_per_student, aes(x = num_grades, fill = sex)) +
 ```
 # Question 15
 
+```{r}
+grades_arch_scul <- combined_data |>
+  filter(course == "Architecture and Sculpture") |>
+  group_by(id, group) |>  # include group in grouping
+  summarize(num_grades = n(), .groups = "drop")  # keeps group automatically
+
+# Show a small extract
+grades_arch_scul |>
+  slice_head(n = 5) |>
+  knitr::kable()
+
+```
+
 
 
 
