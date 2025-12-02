@@ -197,6 +197,34 @@ avg_grades_table |>
 
   
 ```
+# Question 12
+
+## Attendance analysis
+
+```{r}
+
+grades_per_student <- grades |>
+  group_by(id) |>
+  summarize(num_grades = n(), .groups = "drop") |>
+  left_join(students, by = c(id = "id")) |>
+  select(id, group, sex, num_grades)
+
+grades_per_student |>
+  slice_head(n = 10) |>
+  knitr::kable()
+
+summary_table <- grades_per_student |>
+  summarize(
+    min = min(num_grades, na.rm = TRUE),
+    max = max(num_grades, na.rm = TRUE),
+    mean = mean(num_grades, na.rm = TRUE),
+    median = median(num_grades, na.rm = TRUE)
+  )
+
+knitr::kable(summary_table)
+
+```
+
 
 
 
